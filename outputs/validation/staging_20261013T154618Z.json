@@ -1,0 +1,68 @@
+{
+  "pipeline_run_id": "20261013T154618Z",
+  "layer": "staging",
+  "checked_at_utc": "2026-10-13T15:46:18Z",
+  "summary": {
+    "pass": 8,
+    "warn": 0,
+    "fail": 0
+  },
+  "results": [
+    {
+      "name": "schema",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "all 5 present"
+    },
+    {
+      "name": "nullability",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "no nulls in required columns"
+    },
+    {
+      "name": "uniqueness",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "duplicates=0"
+    },
+    {
+      "name": "accepted_values_collision_severity",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "unexpected severity codes=[]"
+    },
+    {
+      "name": "range_number_of_vehicles",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "out_of_range=0"
+    },
+    {
+      "name": "date_logic",
+      "layer": "staging",
+      "severity": "fail",
+      "passed": true,
+      "detail": "outside 2021-2025=0"
+    },
+    {
+      "name": "coordinate_ranges",
+      "layer": "staging",
+      "severity": "warn",
+      "passed": true,
+      "detail": "bad_lat=0 bad_lon=0"
+    },
+    {
+      "name": "row_count",
+      "layer": "staging",
+      "severity": "warn",
+      "passed": true,
+      "detail": "rows=513801"
+    }
+  ]
+}

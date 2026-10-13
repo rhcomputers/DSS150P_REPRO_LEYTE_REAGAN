@@ -1,0 +1,27 @@
+{
+  "dataset": "uk_dft_stats19_collision",
+  "dataset_checksum_sha256": "06a03c0e5504175e23ed98e3e0b4767ac61d396c073405a1bddab9339c18f948",
+  "model": {
+    "algorithm": "random_forest",
+    "random_seed": 42,
+    "test_size": 0.2,
+    "hyperparameters": {
+      "n_estimators": 200,
+      "max_depth": 12,
+      "min_samples_split": 5,
+      "class_weight": "balanced"
+    }
+  },
+  "metrics": {
+    "accuracy": 0.8065413921623963,
+    "precision": 0.04353660354853139,
+    "recall": 0.5797485109199206,
+    "f1": 0.08099112426035503,
+    "roc_auc": 0.8025194270820567
+  },
+  "row_counts": {
+    "total": 513801,
+    "train": 411040,
+    "test": 102761
+  }
+}

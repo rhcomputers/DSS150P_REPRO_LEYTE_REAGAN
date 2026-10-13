@@ -1,0 +1,47 @@
+{
+  "pipeline_run_id": "manual",
+  "layer": "curated",
+  "checked_at_utc": "2026-10-13T15:18:33Z",
+  "summary": {
+    "pass": 5,
+    "warn": 0,
+    "fail": 0
+  },
+  "results": [
+    {
+      "name": "schema",
+      "layer": "curated",
+      "severity": "fail",
+      "passed": true,
+      "detail": "all 6 present"
+    },
+    {
+      "name": "uniqueness",
+      "layer": "curated",
+      "severity": "fail",
+      "passed": true,
+      "detail": "duplicates=0"
+    },
+    {
+      "name": "reconciliation_is_fatal",
+      "layer": "curated",
+      "severity": "fail",
+      "passed": true,
+      "detail": "mismatches=0"
+    },
+    {
+      "name": "timestamps",
+      "layer": "curated",
+      "severity": "fail",
+      "passed": true,
+      "detail": "null_datetimes=0"
+    },
+    {
+      "name": "partitions",
+      "layer": "curated",
+      "severity": "fail",
+      "passed": true,
+      "detail": "rows_missing_year=0"
+    }
+  ]
+}
