@@ -1,1 +1,41 @@
+# --- Version control ---
+.git
+.gitignore
+.gitattributes
 
+# --- Python virtual envs and caches ---
+.venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- IDE / editor ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# --- Data (never bake into the image) ---
+data/
+
+# --- Outputs and runtime state (regenerable) ---
+outputs/
+state/
+logs/
+
+# --- Docs images are large; keep the markdown ---
+docs/*.png
+
+# --- Local secrets ---
+.env
+*.env
+!.env.example
