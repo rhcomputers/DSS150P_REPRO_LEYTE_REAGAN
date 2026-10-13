@@ -1,0 +1,69 @@
+project:
+  name: dss150p_repro
+  version: "0.1.0"
+  owner: "LEYTE, REAGAN"
+
+paths:
+  source_dir: data/source
+  raw_dir: data/raw
+  staging_dir: data/staging
+  curated_dir: data/curated
+  partitioned_dir: data/partitioned
+  quarantine_dir: data/quarantine
+  outputs_dir: outputs
+  model_dir: outputs/model
+  metadata_dir: metadata
+  state_dir: state
+
+source:
+  filename: dft-road-casualty-statistics-collision-last-5-years.csv
+  provider: UK Department for Transport (DfT), STATS19
+  license: Open Government Licence v3.0
+  checksum_algorithm: sha256
+  checksum: 06a03c0e5504175e23ed98e3e0b4767ac61d396c073405a1bddab9339c18f948
+  row_count: 513801
+  column_count: 44
+  size_bytes: 97669586
+
+ingestion:
+  mode: full
+  incremental_batches: 3
+  checkpoint_file: state/ingest_checkpoint.json
+  row_hash_columns: [collision_index]
+  batch_key: collision_year
+
+storage:
+  raw_format: parquet
+  staging_format: parquet
+  curated_format: parquet
+  enable_postgres: true
+  postgres_schema: public
+  postgres_tables:
+    raw: raw_source
+    staging: staging_source
+    curated: curated_model_ready
+
+model:
+  target_column: collision_severity
+  target_derivation: "is_fatal = (collision_severity == 1)"
+  positive_class: 1
+  task: classification
+  algorithm: random_forest
+  random_seed: 42
+  test_size: 0.2
+  hyperparameters:
+    n_estimators: 200
+    max_depth: 12
+    min_samples_split: 5
+    class_weight: balanced
+
+evaluation:
+  tolerance:
+    accuracy: 0.02
+    f1: 0.02
+  metrics_file: outputs/metrics.json
+
+logging:
+  level: INFO
+  format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+  log_dir: logs
