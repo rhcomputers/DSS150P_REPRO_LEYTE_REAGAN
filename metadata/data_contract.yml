@@ -1,0 +1,158 @@
+contract:
+  dataset: uk_dft_stats19_collision
+  version: "1.0.0"
+  checksum_sha256: 06a03c0e5504175e23ed98e3e0b4767ac61d396c073405a1bddab9339c18f948
+  effective_date: 2026-10-13
+  owner: "LEYTE, REAGAN (individual lab)"
+
+source:
+  format: csv
+  encoding: utf-8
+  delimiter: ","
+  expected_rows: 513801
+  expected_columns: 44
+  expected_size_bytes: 97669586
+  row_tolerance: 0
+
+required_columns:
+  - collision_index
+  - collision_year
+  - collision_ref_no
+  - collision_severity
+  - date
+  - time
+  - day_of_week
+  - police_force
+  - number_of_vehicles
+  - number_of_casualties
+  - longitude
+  - latitude
+  - speed_limit
+  - road_type
+  - urban_or_rural_area
+  - light_conditions
+  - weather_conditions
+  - road_surface_conditions
+
+column_types:
+  collision_index: string
+  collision_year: integer
+  collision_ref_no: string
+  collision_severity: integer
+  date: string         
+  time: string           
+  day_of_week: integer
+  police_force: integer
+  number_of_vehicles: integer
+  number_of_casualties: integer
+  longitude: float
+  latitude: float
+  speed_limit: integer
+  road_type: integer
+  urban_or_rural_area: integer
+  light_conditions: integer
+  weather_conditions: integer
+  road_surface_conditions: integer
+
+nullability:
+  allow_null:
+    - longitude
+    - latitude
+    - location_easting_osgr
+    - location_northing_osgr
+  forbid_null:
+    - collision_index
+    - collision_year
+    - collision_ref_no
+    - collision_severity
+    - date
+    - time
+    - day_of_week
+    - police_force
+    - number_of_vehicles
+    - number_of_casualties
+
+keys:
+  primary_key: collision_index
+  business_key: [collision_year, collision_ref_no]
+  uniqueness_rules:
+    - columns: [collision_index]
+      level: hard
+      on_violation: fail
+
+target:
+  column: collision_severity
+  type: integer
+  allowed_values: [1, 2, 3]
+  meaning:
+    1: fatal
+    2: serious
+    3: slight
+  derived_binary:
+    name: is_fatal
+    expression: "collision_severity == 1"
+    positive_rate_expected: 0.0147
+    tolerance: 0.005
+
+value_rules:
+  - column: collision_year
+    allowed_values: [2021, 2022, 2023, 2024, 2025]
+    on_violation: fail
+  - column: day_of_week
+    allowed_values: [1, 2, 3, 4, 5, 6, 7]
+    on_violation: fail
+  - column: number_of_vehicles
+    min: 1
+    max: 100
+    on_violation: fail
+  - column: number_of_casualties
+    min: 0
+    max: 200
+    on_violation: fail
+  - column: speed_limit
+    allowed_values: [10, 15, 20, 30, 40, 50, 60, 70, -1]
+    on_violation: warn
+  - column: latitude
+    min: 49.0
+    max: 61.0
+    on_violation: warn
+  - column: longitude
+    min: -8.0
+    max: 2.0
+    on_violation: warn
+  - column: urban_or_rural_area
+    allowed_values: [1, 2, 3, -1]
+    on_violation: warn
+
+format_rules:
+  - column: date
+    regex: '^\d{2}/\d{2}/\d{4}$'
+    on_violation: fail
+  - column: time
+    regex: '^\d{2}:\d{2}$'
+    on_violation: fail
+
+freshness:
+  expected_update_frequency: annual
+  max_age_days: 730
+  on_violation: warn
+
+violation_behavior:
+  fail:
+    action: halt_pipeline
+    quarantine: false
+  warn:
+    action: log_and_continue
+    quarantine: false
+  quarantine:
+    action: move_to_quarantine
+    quarantine_dir: data/quarantine
+
+lineage:
+  upstream: UK Department for Transport (DfT) STATS19
+  downstream:
+    - raw_source
+    - staging_source
+    - curated_model_ready
+    - outputs/predictions.csv
+    - outputs/metrics.json

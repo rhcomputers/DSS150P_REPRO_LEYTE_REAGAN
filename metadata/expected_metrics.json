@@ -1,0 +1,50 @@
+{
+  "_comment": "Baseline frozen on first authoritative run. Subsequent runs must reproduce each metric within tolerance.",
+  "dataset": "uk_dft_stats19_collision",
+  "dataset_checksum_sha256": "06a03c0e5504175e23ed98e3e0b4767ac61d396c073405a1bddab9339c18f948",
+  "task": "binary_classification",
+  "target": {
+    "column": "collision_severity",
+    "derived_binary_name": "is_fatal",
+    "positive_class": 1,
+    "positive_rate_expected": 0.0147,
+    "positive_rate_tolerance": 0.005
+  },
+  "model": {
+    "algorithm": "random_forest",
+    "random_seed": 42,
+    "test_size": 0.2,
+    "hyperparameters": {
+      "n_estimators": 200,
+      "max_depth": 12,
+      "min_samples_split": 5,
+      "class_weight": "balanced"
+    }
+  },
+  "split": {
+    "strategy": "stratified_train_test",
+    "random_seed": 42,
+    "test_size": 0.2,
+    "manifest_file": "metadata/split_manifest.json"
+  },
+  "metrics": {
+    "accuracy": 0.7692315177937156,
+    "precision": 0.04260228255943307,
+    "recall": 0.6843150231634679,
+    "f1": 0.0802109999224265,
+    "roc_auc": 0.8079254258891585
+  },
+  "tolerance": {
+    "accuracy": 0.02,
+    "precision": 0.02,
+    "recall": 0.02,
+    "f1": 0.02,
+    "roc_auc": 0.02
+  },
+  "reproducibility": {
+    "require_seed_match": true,
+    "require_split_match": true,
+    "require_checksum_match": true,
+    "notes": "Metrics above are null on first commit. They will be populated after the first authoritative run of src/train.py and frozen thereafter. A reviewer must reproduce each metric within the tolerance listed above."
+  }
+}

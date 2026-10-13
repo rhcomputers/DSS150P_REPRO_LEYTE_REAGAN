@@ -1,0 +1,61 @@
+dataset:
+  identifier: uk_dft_stats19_collision
+  title: "UK Department for Transport - STATS19 Road Collision Data (Last 5 Years)"
+  description: >
+    Collision-level records of personal-injury road collisions reported to
+    police in Great Britain, covering collision years 2021 through 2025.
+    One row per collision. Contains severity, date, time, location (OSGR and
+    lat/lon), road environment, and police force attributes.
+
+  provider: UK Department for Transport (DfT)
+  source_url: https://data.dft.gov.uk/road-accidents-safety-data/
+  access_method: manual_download
+  access_date: 2026-10-13
+  license: Open Government Licence v3.0
+  license_url: https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+  redistributable: true
+
+file:
+  filename: dft-road-casualty-statistics-collision-last-5-years.csv
+  local_path: data/source/dft-road-casualty-statistics-collision-last-5-years.csv
+  format: csv
+  encoding: utf-8
+  delimiter: ","
+  size_bytes: 97669586
+  row_count: 513801
+  column_count: 44
+  collision_years_covered: [2021, 2022, 2023, 2024, 2025]
+
+integrity:
+  checksum_algorithm: sha256
+  checksum: 06a03c0e5504175e23ed98e3e0b4767ac61d396c073405a1bddab9339c18f948
+  verification_command: >
+    Get-FileHash data/source/dft-road-casualty-statistics-collision-last-5-years.csv -Algorithm SHA256
+
+placement:
+  required_local_path: data/source/dft-road-casualty-statistics-collision-last-5-years.csv
+  acquisition_instructions: >
+    Download the STATS19 "collision" CSV for the last 5 years from the DfT
+    open data portal and rename it to the filename above. Place it under
+    data/source/. The file is NOT committed to Git; the checksum above is
+    the source of truth for identity.
+  git_tracked: false
+  gitignore_rule: "data/source/* is ignored except .gitkeep"
+
+schema:
+  primary_key_candidate: collision_index
+  natural_ordering: [collision_year, collision_ref_no]
+  date_format: "DD/MM/YYYY"
+  time_format: "HH:MM"
+  target_candidate: collision_severity
+  target_codes:
+    "1": fatal
+    "2": serious
+    "3": slight
+
+notes:
+  - "One row per collision, not per casualty or per vehicle."
+  - "53 rows have missing coordinates (location_easting_osgr, location_northing_osgr, longitude, latitude)."
+  - "All other columns have zero nulls."
+  - "Field names ending in _historic are legacy fields retained by DfT for continuity."
+  - "collision_adjusted_severity_* columns are modelled adjustments by DfT, not raw reports."
