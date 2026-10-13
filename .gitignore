@@ -1,0 +1,80 @@
+# --- Environment & secrets ---
+.env
+*.env
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Data (do NOT commit source or derived data unless redistributable) ---
+data/source/*
+!data/source/.gitkeep
+data/raw/*
+!data/raw/.gitkeep
+data/staging/*
+!data/staging/.gitkeep
+data/curated/*
+!data/curated/.gitkeep
+data/partitioned/*
+!data/partitioned/.gitkeep
+data/quarantine/*
+!data/quarantine/.gitkeep
+
+# --- Archived / non-authoritative sources ---
+data/archive/*
+!data/archive/.gitkeep
+
+# --- Outputs & model artifacts ---
+outputs/model/*
+!outputs/model/.gitkeep
+outputs/*.csv
+# metrics.json is committed as the frozen baseline evidence
+!outputs/metrics.json
+
+# --- Pipeline runtime state (checkpoints, watermarks) ---
+state/
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Airflow ---
+airflow.cfg
+airflow.db
+airflow-webserver.pid
+standalone_admin_password.txt
+
+# --- PostgreSQL / Docker volumes ---
+pgdata/
+postgres-data/
+*.sqlite
+*.db
+
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
