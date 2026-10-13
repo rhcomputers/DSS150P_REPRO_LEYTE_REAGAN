@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: dss150p_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-dss150p}
+      POSTGRES_USER: ${POSTGRES_USER:-dss150p_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change_me_local_only}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dss150p_user} -d ${POSTGRES_DB:-dss150p}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pipeline:
+    build: .
+    container_name: dss150p_pipeline
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["python", "-m", "src.cli", "--help"]
+
+  airflow:
+    image: apache/airflow:2.9.3-python3.11
+    container_name: dss150p_airflow
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "False"
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${POSTGRES_USER:-dss150p_user}:${POSTGRES_PASSWORD:-change_me_local_only}@postgres:5432/${POSTGRES_DB:-dss150p}
+      AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "True"
+      AIRFLOW_UID: ${AIRFLOW_UID:-50000}
+      _PIP_ADDITIONAL_REQUIREMENTS: "pandas pyarrow scikit-learn sqlalchemy psycopg2-binary pyyaml python-dotenv joblib"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./src:/opt/airflow/src
+      - ./config:/opt/airflow/config
+      - ./data:/opt/airflow/data
+      - ./metadata:/opt/airflow/metadata
+      - ./outputs:/opt/airflow/outputs
+      - ./logs:/opt/airflow/logs
+      - ./state:/opt/airflow/state
+    command: >
+      bash -c "airflow db migrate &&
+               (airflow users create --username admin --password admin --firstname Air --lastname Flow --role Admin --email admin@example.com || true) &&
+               airflow standalone"
+
+volumes:
+  pgdata:
